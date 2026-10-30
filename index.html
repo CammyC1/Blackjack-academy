@@ -77,6 +77,7 @@ input,select{background:#08150e;border:1px solid #50624d;border-radius:10px}
 </section>
 <div class="footer">BLACKJACK ACADEMY · EDUCATIONAL SIMULATOR · VIRTUAL CHIPS ONLY</div></div>
 <script>
+const $=id=>document.getElementById(id);
 const SB_URL='https://xxooikjelpsnyshzfqly.supabase.co',SB_KEY='sb_publishable_vFZx2b780bkXk8VVX_SwCA_OQrEZ3B7',SESSION_KEY='bj-academy-session';
 let sbSession=null,playerProfile=null;
 try{sbSession=JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch(e){}
@@ -105,7 +106,7 @@ $('signUp').onclick=async()=>{try{const email=$('playerEmail').value.trim(),pass
 $('signIn').onclick=async()=>{try{const j=await sbAuth('token?grant_type=password',{email:$('playerEmail').value.trim(),password:$('playerPassword').value});sbSession=j;localStorage.setItem(SESSION_KEY,JSON.stringify(j));await loadPlayer()}catch(e){authMessage(e.message)}};
 $('signOut').onclick=()=>{sbSession=null;playerProfile=null;localStorage.removeItem(SESSION_KEY);$('signOut').hidden=true;$('signIn').hidden=false;$('signUp').hidden=false;authMessage('Signed out. You can keep practising locally or sign in again.')};
 $('claimRecovery').onclick=async()=>{try{if(!sbSession?.access_token)throw new Error('Sign in to claim recovery chips.');const j=await sbRpc('claim_daily_recovery');$('recoveryStatus').textContent=j.claimed?'£200 recovery chips added. Welcome back.':j.reason;if(j.claimed){bank=Number(j.bankroll);persist();updateStatsUI();$('bankInput').value=bank}}catch(e){$('recoveryStatus').textContent=e.message}};
-const $=id=>document.getElementById(id),suits=['♠','♥','♦','♣'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const suits=['♠','♥','♦','♣'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 let rules={decks:6,soft17:'stand',payout:1.5,das:'yes',surrender:'no',penetration:75},shoe=[],player=[],dealer=[],bank=1000,bet=10,active=false,done=true,roundBet=0,stats={hands:0,wins:0,losses:0,pushes:0,correct:0,decisions:0,session:0},cs=[],cc=0,seen=0,countHand=[];
 try{let old=JSON.parse(localStorage.getItem('bj-academy')||'{}');if(old.rules)rules=Object.assign(rules,old.rules);if(old.bank)bank=old.bank;if(old.stats)stats=Object.assign(stats,old.stats)}catch(e){}
 const money=n=>'£'+Number(n).toFixed(2).replace(/\.00$/,'');
